@@ -2,7 +2,7 @@ def names_parser(isBoy):
     from os import listdir
     from os.path import isfile, join
     from csv import reader
-    myPath = "/a/fr-05/vol/prime/stud/cppdoron/python/AIProject/names/"
+    myPath = "/a/fr-05/vol/prime/stud/cppdoron/python/whatsinaname/names/"
     onlyfiles = [yearFile for yearFile in listdir(myPath) if isfile(join(myPath, yearFile))]
     onlyfiles.sort(reverse=True)
     counter = 0
@@ -27,7 +27,7 @@ def names_parser(isBoy):
                     f_names_and_values[line[0]] = (int(line[2]) * multiplicationFactor)
     m_sorted_list = sorted(m_names_and_values, key = m_names_and_values.__getitem__, reverse = True)
     f_sorted_list = sorted(f_names_and_values, key = f_names_and_values.__getitem__, reverse = True)
-    return m_sorted_list[:100] if isBoy else f_sorted_list[:100]
+    return m_sorted_list[:150] if isBoy else f_sorted_list[:150]
 #     malesSorted = open("malesSorted.txt", "w")
 #     femalesSorted = open("femalesSorted.txt", "w")
 #     j = 0

@@ -13,6 +13,8 @@ class Gui():
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0]
         ]
         self.first_screen = []
@@ -59,55 +61,85 @@ class Gui():
         self.createMatrix(False)
 
     def createMatrix(self, isBoy):
-        explanation = Label(text = "Please choose a name you don't particurally like...", pady = 10, font = 5000, fg="black")
+        semantic_dislikes = []
+        explanation = Label(text = "Names you don't like for SEMANTIC reasons (meaning, origin, tradition etc.):", pady = 10, font = 5000, fg="black")
         explanation.grid(row=0, column=0, columnspan=6)
+        doneButton = Button(self.board, text="DONE", fg="black", font="bold", activebackground="red", width=70, command =lambda list=semantic_dislikes: self.onDonePressed(doneButton,explanation, list, isBoy))
+        doneButton.grid(row=1, column=0, columnspan=6)
         nameIndex = 0;
         for y, row in enumerate(self.matrix):
             buttons_row = []
             namesList = generateGeneticList(self.boy_list) if isBoy else generateGeneticList(self.girl_list)
             for x, element in enumerate(row):
                 if (isBoy):
-                    nameButton = Button(self.board, text=namesList[nameIndex], fg = "blue", width=10, height=5, command=lambda a=x,b=y,name=namesList[nameIndex]: self.onButtonPressed(a,b, name, explanation, True))
+                    nameButton = Checkbutton(self.board, text=namesList[nameIndex], fg = "blue", width=10, height=5, command=lambda a=x,b=y,name=namesList[nameIndex]: self.onButtonPressed(a,b, name, explanation, semantic_dislikes, True))
                 else:
-                    nameButton = Button(self.board, text=namesList[nameIndex], fg = "deeppink", width=10, height=5, command=lambda a=x,b=y,name=namesList[nameIndex]: self.onButtonPressed(a,b, name, explanation, False))
+                    nameButton = Checkbutton(self.board, text=namesList[nameIndex], fg = "deeppink", width=10, height=5, command=lambda a=x,b=y,name=namesList[nameIndex]: self.onButtonPressed(a,b, name, explanation, semantic_dislikes, False))
                 nameIndex += 1
-                nameButton.grid(row=y + 1, column=x)
+                nameButton.grid(row=y + 2, column=x)
                 buttons_row.append(nameButton)
             self.name_buttons.append(buttons_row)
 
-    def onButtonPressed(self, x, y, namePicked, header, isBoy):
-        self.name_buttons[y][x]['bg'] = 'yellow'
+    
+    def onButtonPressed(self, x, y, namePicked, header, bad_names_list, isBoy):  
+        if self.name_buttons[y][x]['bg'] == 'yellow':
+            bad_names_list.remove(namePicked)
+            self.name_buttons[y][x]['bg'] = "#edeceb"
+        else:
+            bad_names_list.append(namePicked)
+            self.name_buttons[y][x]['bg'] = 'yellow'
+        print(bad_names_list)
+        
+    def onDonePressed(self, doneButton, header, bad_names_list, isBoy):
+#         self.name_buttons[y][x]['bg'] = 'yellow'
+        doneButton.destroy()
         header.destroy()
         for list_names in self.name_buttons:
             for name in list_names:
                 name.destroy()
-        self.askWhy(namePicked, isBoy)
+        self.showNames(bad_names_list, isBoy)
+    
+    def showNames(self, bad_names_list, isBoy):
+        
+        didnt_like_font = ("verdana", 15, "bold" )
+        didnt_like = Label(text = "Names you didn't like for semantic reasons:", pady=5)
+        didnt_like.config(font = didnt_like_font)
+        didnt_like.grid(row = 0, column = 0, columnspan = 6)
+        self.why_buttons.append(didnt_like)
 
-    def askWhy(self, namePicked, isBoy):
-        name_font = ("Helvetica", 30, "bold")
-        name = Label(text = namePicked.capitalize(), pady=7, font = "bold")
-        name.grid(row = 0, column = 0, columnspan = 6)
+
+        name_font = ("Helvetica", 12, "bold")
+        name = Label(text = bad_names_list, pady=7, font = "bold")
+        name.grid(row = 1, column = 0, columnspan = 6)
         name.config(font=name_font)
         name.config(fg="deepskyblue" if isBoy else "hotpink")
         self.why_buttons.append(name)
         
-        why_not_font = ("verdana", 13, "bold" )
-        why_not = Label(text = "Why don't you like the name?", pady=5)
-        why_not.config(font = why_not_font)
-        why_not.grid(row = 1, column = 0, columnspan = 6)
-        self.why_buttons.append(why_not)
-
-        semantic_reason = Button(self.board, height=5, width=10, text = "Semantic Reason", font = 50, bg = "lightgray", fg="black", padx=50)
-        semantic_reason.grid(row = 2, column = 0)
-        self.why_buttons.append(semantic_reason)
-
-        syntax_reason = Button(self.board, height=5, width=10, text = "Syntax Reason", font = 50, bg = "lightgray", fg="black", padx=50)
-        syntax_reason.grid(row = 2, column = 2)
-        self.why_buttons.append(syntax_reason)
-
-        personal_reason = Button(self.board, height=5, width=10, text = "Personal Reason", font = 50, bg = "lightgray", fg="black", padx=50)
-        personal_reason.grid(row = 2, column = 3)
-        self.why_buttons.append(personal_reason)
+#     def askWhy(self, namePicked, isBoy):
+#         name_font = ("Helvetica", 30, "bold")
+#         name = Label(text = namePicked.capitalize(), pady=7, font = "bold")
+#         name.grid(row = 0, column = 0, columnspan = 6)
+#         name.config(font=name_font)
+#         name.config(fg="deepskyblue" if isBoy else "hotpink")
+#         self.why_buttons.append(name)
+#         
+#         why_not_font = ("verdana", 13, "bold" )
+#         why_not = Label(text = "Why don't you like the name?", pady=5)
+#         why_not.config(font = why_not_font)
+#         why_not.grid(row = 1, column = 0, columnspan = 6)
+#         self.why_buttons.append(why_not)
+# 
+#         semantic_reason = Button(self.board, height=5, width=10, text = "Semantic Reason", font = 50, bg = "lightgray", fg="black", padx=50)
+#         semantic_reason.grid(row = 2, column = 0)
+#         self.why_buttons.append(semantic_reason)
+# 
+#         syntax_reason = Button(self.board, height=5, width=10, text = "Syntax Reason", font = 50, bg = "lightgray", fg="black", padx=50)
+#         syntax_reason.grid(row = 2, column = 2)
+#         self.why_buttons.append(syntax_reason)
+# 
+#         personal_reason = Button(self.board, height=5, width=10, text = "Personal Reason", font = 50, bg = "lightgray", fg="black", padx=50)
+#         personal_reason.grid(row = 2, column = 3)
+#         self.why_buttons.append(personal_reason)
 #         personal_reason["command"]= lambda: self.newButtons(isBoy, self.why_buttons)
 #           
 #           
