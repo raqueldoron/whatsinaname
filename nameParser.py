@@ -27,13 +27,15 @@ def names_parser(isBoy):
                     f_names_and_values[line[0]] = (int(line[2]) * multiplicationFactor)
     m_sorted_list = sorted(m_names_and_values, key = m_names_and_values.__getitem__, reverse = True)
     f_sorted_list = sorted(f_names_and_values, key = f_names_and_values.__getitem__, reverse = True)
-    return m_sorted_list[:150] if isBoy else f_sorted_list[:150]
-#     malesSorted = open("malesSorted.txt", "w")
-#     femalesSorted = open("femalesSorted.txt", "w")
-#     j = 0
-#     for j, name in enumerate(m_sorted_list):
-#         malesSorted.write(str(j) + " " + name + "\n")
-#     for j, name in enumerate(f_sorted_list):
-#         femalesSorted.write(str(j) + " " + name + "\n")
-#     malesSorted.close()
-#     femalesSorted.close()
+    m_sorted_list = m_sorted_list[:500]
+    f_sorted_list = f_sorted_list[:500]
+    malesSorted = open("malesSorted.txt", "w")
+    femalesSorted = open("femalesSorted.txt", "w")
+    j = 0
+    for name in m_sorted_list:
+        malesSorted.write(name + "\n")
+    for name in f_sorted_list:
+        femalesSorted.write(name + "\n")
+    malesSorted.close()
+    femalesSorted.close()
+    return m_sorted_list if isBoy else f_sorted_list
